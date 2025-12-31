@@ -1,10 +1,14 @@
 const express = require("express");
 const { createTodos, updateTodos } = require("./types");
+const { todo } = require("./db");
+const { describe } = require("zod/v4/core");
 const app = express();
 
 app.use(express.json());
 
-app.post("/todos", function(req, res){
+//post route
+
+app.post("/todos", async function(req, res){
 
     const createPayload = req.body;
     const parsedPayload = createTodos.safeParse(createPayload);
@@ -15,13 +19,28 @@ app.post("/todos", function(req, res){
         return;
     }
     //put in mongo or whatever afterwards
+    await todo.Create({
+        title: createPayload.title,
+        description: createPayload.description,
+        completed: false
+    })
 })
 
-app.get("/todos", function(req, res){
+//get route
 
+app.get("/todos", async function(req, res){
+
+    const todos = await todo.find({})
+
+    res.json({
+        todo
+    })
 });
 
-app.put("/completed", function(req, res){
+
+//update route
+
+app.put("/completed", async function(req, res){
     
     const updatePayload = req.body;
     const parsedPayload = updateTodos.safeParse(updatePayload);
@@ -31,4 +50,12 @@ app.put("/completed", function(req, res){
         })
         return;
     }
+    await todo.update({
+        _id: req.body.id
+    },{
+        completed: true
+    })
+    res.json({
+        msg: "Todo marked as completed"
+    })
 })
