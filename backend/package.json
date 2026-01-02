@@ -9,6 +9,7 @@
   "author": "Anubhav Singh",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.2.1",
     "mongoose": "^9.1.0",
     "zod": "^4.2.1"

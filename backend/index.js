@@ -1,10 +1,13 @@
 const express = require("express");
+const cors = require("cors")
 const { createTodos, updateTodos } = require("./types");
 const { todo } = require("./db");
 const { describe } = require("zod/v4/core");
 const app = express();
 
 app.use(express.json());
+app.use(cors());
+
 
 //post route
 
@@ -19,12 +22,17 @@ app.post("/todos", async function(req, res){
         return;
     }
     //put in mongo or whatever afterwards
-    await todo.Create({
+    await todo.create({
         title: createPayload.title,
         description: createPayload.description,
         completed: false
     })
+
+    res.json({
+        msg: "Todo created successfully"
+    })          
 })
+
 
 //get route
 
@@ -33,7 +41,7 @@ app.get("/todos", async function(req, res){
     const todos = await todo.find({})
 
     res.json({
-        todo
+        todos
     })
 });
 
@@ -50,7 +58,7 @@ app.put("/completed", async function(req, res){
         })
         return;
     }
-    await todo.update({
+    await todo.updateOne({
         _id: req.body.id
     },{
         completed: true
@@ -58,4 +66,8 @@ app.put("/completed", async function(req, res){
     res.json({
         msg: "Todo marked as completed"
     })
+})
+
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
 })
