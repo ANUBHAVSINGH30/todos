@@ -13,7 +13,7 @@ export function CreateTodo(){
                 type="text"
                 onChange={function(e){
                     const value= e.target.value;
-                    setTitle(e.target.value);
+                    setTitle(value);
                 }}
             />
             
